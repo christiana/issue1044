@@ -31,72 +31,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =========================================================================*/
 
 #include "cxMainWindow.h"
-
 #include <QtWidgets>
-
 #include "QVTKWidget.h"
-#include "vtkSmartPointer.h"
 #include "vtkRenderWindow.h"
+#include "vtkRenderer.h"
 
-typedef vtkSmartPointer<class vtkRenderWindow> vtkRenderWindowPtr;
-
-namespace cx
-{
+#define SHOW_ERROR
 
 MainWindow::MainWindow()
 {
-	this->setObjectName("MainWindow");
-
+#ifdef SHOW_ERROR
 	QVTKWidget* widget = new QVTKWidget();
-	vtkRenderWindowPtr rw = vtkRenderWindowPtr::New();
-	widget->SetRenderWindow(rw);
-	rw->GetInteractor()->EnableRenderOff();
-
+	// add a renderer for a less messy view: The bug appears without it as well.
+	vtkRenderer* renderer = vtkRenderer::New();
+	renderer->SetBackground(0,0,1);
+	widget->GetRenderWindow()->AddRenderer(renderer);
+	renderer->Delete();
+#else
+	QWidget* widget = new QLabel("Hello QVTK");
+#endif
 	this->setCentralWidget(widget);
-//	this->setCentralWidget(viewService()->getLayoutWidget(this, 0));
 
-	this->createToolBars();
+	// The hidden toolbar makes the bug more obvious.
+	// Without this the drag/drop of QDockWidgets is still messed up.
+	this->addHiddenToolbar();
 
-	this->setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
-
+	// drag A on top of B -> white square appears (if not already present at startup)
 	this->addDock("A");
 	this->addDock("B");
-
-	this->resize(800,500);
 }
 
-void MainWindow::createToolBars()
+void MainWindow::addHiddenToolbar()
 {
-	QToolBar* toolbar = new QToolBar("Data");
+	QToolBar* toolbar = new QToolBar("FooBar");
 	this->addToolBar(toolbar);
 	toolbar->hide();
-	toolbar->addAction("NewPatient");
+	toolbar->addAction("Foo");
 }
 
 void MainWindow::addDock(QString name)
 {
 	QDockWidget* dockWidget = new QDockWidget(name, this);
-	dockWidget->setWidget(new QTextBrowser(this));
+	dockWidget->setWidget(new QLabel(name));
 	this->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
 }
 
-MainWindow::~MainWindow()
-{
-
-}
-
-
-////#ifdef CX_APPLE
-////	// HACK
-////	// Toolbars are not correctly refreshed on mac 10.8,
-////	// Cause is related to QVTKWidget (removing it removes the problem)
-////	// The following "force refresh by resize" solves repaint, but
-////	// inactive toolbars are still partly clickable.
-////	QSize size = this->size();
-////	this->resize(size.width()-1, size.height());
-////	this->resize(size);
-////#endif
-//}
-
-
-}//namespace cx

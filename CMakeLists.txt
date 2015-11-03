@@ -20,9 +20,10 @@ cmake_minimum_required(VERSION 2.8.12)
 	#find_package(VTK REQUIRED) # import all libs - try this for debugging lib includes
     include(${VTK_USE_FILE})
 
-add_executable(CustusX cxMain.cpp cxMainWindow.cpp cxMainWindow.h) 
 
-target_link_libraries(CustusX
+add_executable(issue1044 MACOSX_BUNDLE cxMain.cpp cxMainWindow.cpp cxMainWindow.h)
+
+target_link_libraries(issue1044
     Qt5::Core
     Qt5::Widgets
 	${VTK_LIBRARIES}

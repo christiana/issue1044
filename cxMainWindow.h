@@ -35,22 +35,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QMainWindow>
 
-namespace cx
-{
-
 class  MainWindow: public QMainWindow
 {
 public:
 	MainWindow();
-	virtual ~MainWindow();
-
 private:
-	void createToolBars(); ///< creates and adds toolbars for convenience
-	QToolBar *registerToolBar(QString name, QString groupname="Toolbars");
+	void addHiddenToolbar(); ///< creates and adds toolbars for convenience
 	void addDock(QString name);
-
 };
-
-}//namespace cx
 
 #endif /* CXMAINWINDOW_H_ */

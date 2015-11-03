@@ -37,14 +37,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  app.setOrganizationName("CustusX");
-  app.setOrganizationDomain("www.custusx.org");
   app.setApplicationName("issue1044");
 
-  cx::MainWindow window;
+  MainWindow window;
+  window.resize(800,500);
   window.show();
 
-  int retVal = app.exec();
-
-  return retVal;
+  return app.exec();
 }
+
+
